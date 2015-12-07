@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Flask-SocketIO Test</title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            namespace = '/';
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+            var player_token = 'one'
+
+            // socket.emit('battlegrounds_load', {
+            //     player: player_token
+            // })
+
+            // $('.battleground td').on('click', function(e){
+            //     e.preventDefault();
+
+            //     socket.emit('battleground_attack', {position: '1,5', player_token: 'playerone'})
+            // })
+
+            // socket.on('battlegrounds_load_response', function(response) {
+            //     console.log(response)
+            // });
+        });
+    </script>
+
+    <style type="text/css">
+        body, html {
+            margin: 50px;
+        }
+
+        .content-block {
+            float: left;
+            clear: both;
+        }
+        .battleground {
+            float: left;
+
+            display: table;
+            border: 1px solid #000;
+            border-collapse: collapse;
+            margin-right: 50px;
+        }
+        .battleground td {
+            display: table-cell;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #000;
+
+            text-align: center;
+        }
+
+        .footer-block {
+            float: left;
+            
+            margin-top: 50px;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper-block">
+        <!-- <h2 class="title">Battleships</h2> -->
+
+        <div class="content-block">
+            <a href="/game/">Create game</a>
+        </div>
+    </div>
+
+    <div class="footer-block">&copy; kpi.mosquito</div>
+</body>
+</html>

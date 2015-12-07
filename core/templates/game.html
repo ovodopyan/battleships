@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Flask-SocketIO Test</title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        function build_battleground(id, data){
+            var headers_t = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k']
+            var headers_l = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+
+            if (data) {
+                var filled = 'filled';
+            } else {
+                var filled = '';
+            }
+
+            var table = '<table class="battleground '+ filled +'" data-player="'+ id +'">'
+            table += '<tr><td class="head_cell"></td>'
+            for (var i=0;i<10;i++){
+                table += '<td class="head_cell">'+ headers_t[i] +'</td>'
+            }
+            table += '</tr>'
+
+            for (var i=0;i<10;i++){
+                table += '<tr>'
+                table += '<td class="head_cell">'+ headers_l[i] +'</td>'
+
+                for (var j=0;j<10;j++){
+                    if (data && (data[i][j] != '-1')){
+                        table += '<td class="fill"></td>'
+                    } else {
+                        table += '<td class="empty"></td>'
+                    }
+                }
+                table += '</tr>'
+            }
+            table += '</table>'
+
+            $('#battlegrounds').find('#'+id).html(table);
+        }
+
+        $(document).ready(function(){
+            namespace = '/';
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+            var player_token = 'one'
+
+            build_battleground('one');
+            build_battleground('two');
+
+            // socket.emit('battlegrounds_load', {
+            //     player: player_token
+            // })
+
+            // $('.battleground td').on('click', function(e){
+            //     e.preventDefault();
+
+            //     socket.emit('battleground_attack', {position: '1,5', player_token: 'playerone'})
+            // })
+
+            $('.actions .generate_fields').on('click', function(e){
+                e.preventDefault();
+
+                socket.emit('battlegrounds_load', {
+                    player: player_token
+                })
+            })
+
+            socket.on('battlegrounds_load_response', function(response) {
+                response = $.parseJSON(response);
+
+                console.log(response)
+                build_battleground(
+                    response.player_id,
+                    response.data
+                );
+            });
+        });
+    </script>
+
+    <style type="text/css">
+        body, html {
+            font-family: Arial;
+            margin: 50px;
+        }
+
+        .content-block {
+            float: left;
+            clear: both;
+        }
+        .wrapper {
+            float: left;
+        }
+        .battleground {
+            float: left;
+
+            display: table;
+            border: 1px solid #ddd;
+            border-collapse: collapse;
+            margin-right: 50px;
+        }
+        .battleground td {
+            display: table-cell;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ddd;
+
+            text-align: center;
+        }
+        .battleground td.fill {
+            background: #adadad;
+        }
+
+        .battleground td.head_cell {
+            color: #adadad;
+            font-size: 10px;
+        }
+
+        .battleground.filled td {
+            cursor: pointer;
+        }
+
+        .actions {
+            float: left;
+            margin-top: 10px;
+            color: #000;
+        }
+        .actions a {
+            font-size: 11px;
+        }
+        .actions a:hover {
+            opacity: 0.7;
+            cursor: pointer;
+        }
+
+        .footer-block {
+            float: left;
+            
+            margin-top: 50px;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper-block">
+        <!-- <h2 class="title">Battleships</h2> -->
+
+        <div class="content-block">
+            <div id="battlegrounds">
+                <div id="one" class="wrapper"></div>
+                <div id="two" class="wrapper"></div>
+            </div>
+
+            <div class="actions">
+              <a class="generate_fields">Generate BG</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-block">&copy; kpi.mosquito</div>
+</body>
+</html>
